@@ -44,6 +44,10 @@ public class Board {
         else{
             throw new NoChangeException();
         }
+        if(gameOver()){
+            setState(MoveDirection.None);
+            throw new GameOverException();
+        }
     }
 
     private void generateNewNumber(){
@@ -84,7 +88,41 @@ public class Board {
             case Up:
                 currentState = new MoveUp(this);
                 break;
+            default:
+                currentState = new GameOver(this);
         }
+    }
+
+    /**
+     * Checks to see any elements on the board are 0 or can be combined with their neighbor
+     * @return false if game can still be played, true if game is over
+     */
+    private boolean gameOver(){
+        for(int x = 0; x < width; x++){
+            for(int y = 0; y < height; y++){
+                int value = board[x][y];
+                // Check if this space is 0
+                if(value == 0){
+                    // Return false means game isn't over
+                    return false;
+                }
+                // Check if values around it could combine or are 0
+                if(isEqualOrZero(x + 1, y, value) || isEqualOrZero(x - 1, y, value) || isEqualOrZero(x, y + 1, value) || isEqualOrZero(x, y - 1, value)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isEqualOrZero(int x, int y, int value){
+        if(currentState.offBoard(x,y)){
+            return false;
+        }
+        else if(board[x][y] == value || board[x][y] == 0){
+            return true;
+        }
+        return false;
     }
 
     @Override

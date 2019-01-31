@@ -40,7 +40,7 @@ public abstract class State {
         }
     }
 
-    private boolean offBoard(int x, int y){
+    boolean offBoard(int x, int y){
         if(x < 0 || y < 0 || x >= board.width || y >= board.height){
             return true;
         }
